@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Pronouns - Learn with Mayuri</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #ff6b6b; /* Soft Red/Pink */
+            --bg: #f7f9fc;
+            --text: #333;
+            --card-width: 260px;
+            --card-height: 350px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Container for the Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            justify-items: center;
+        }
+
+        /* The Flip Card Container */
+        .card {
+            background-color: transparent;
+            width: var(--card-width);
+            height: var(--card-height);
+            perspective: 1000px; /* Essential for 3D effect */
+            cursor: pointer;
+        }
+
+        /* The Inner Container (What actually rotates) */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        /* Class added via JS to flip */
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Front and Back common styles */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Front Styling */
+        .card-front {
+            background-color: white;
+            color: var(--text);
+            border: 2px solid #eee;
+        }
+
+        .kanji {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .romaji-hint {
+            font-size: 1.2rem;
+            color: #888;
+            font-weight: bold;
+        }
+
+        /* Back Styling */
+        .card-back {
+            background-color: var(--primary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .meaning {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .context {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .gender-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Japanese Pronouns 🇯🇵</h1>
+        <p class="subtitle">Click a card to reveal the meaning!</p>
+    </header>
+
+    <div class="card-grid" id="app"></div>
+
+    <footer>
+        Created by Mayuri Thakur |  Japanese Journey
+    </footer>
+
+    <script>
+        // --- JAVASCRIPT ---
+
+        // 1. Data Structure (Array of Objects)
+        // Easy to add more words later!
+        const pronouns = [
+            {
+                word: "Watashi",
+                kanji: "私",
+                meaning: "I / Me",
+                context: "Polite & Standard. Safe for everyone to use.",
+                gender: "All Genders"
+            },
+            {
+                word: "Boku",
+                kanji: "僕",
+                meaning: "I / Me",
+                context: "Semi-formal/Casual. Humble tone.",
+                gender: "Males Only"
+            },
+            {
+                word: "Ore",
+                kanji: "俺",
+                meaning: "I / Me",
+                context: "Very Casual/Rough. Use with close friends only.",
+                gender: "Males Only"
+            },
+            {
+                word: "Atashi",
+                kanji: "あたし",
+                meaning: "I / Me",
+                context: "Casual & Cute. A softer version of Watashi.",
+                gender: "Females Only"
+            }
+        ];
+
+        // 2. Select the container
+        const app = document.getElementById('app');
+
+        // 3. Function to render cards
+        function renderCards() {
+            pronouns.forEach(item => {
+                // Create Card Elements
+                const card = document.createElement('div');
+                card.classList.add('card');
+
+                // Inner HTML Structure
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="kanji">${item.kanji}</div>
+                            <div class="romaji-hint">${item.word}</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="meaning">${item.meaning}</div>
+                            <div class="context">${item.context}</div>
+                            <div class="gender-tag">${item.gender}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Add Click Event for Flip Effect
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
+
+                // Append to container
+                app.appendChild(card);
+            });
+        }
+
+        // 4. Initialize
+        renderCards();
+
+    </script>
+</body>
+</html>
